@@ -1,5 +1,7 @@
 import { ShaderMaterial, BackSide } from "three"
 
+// Shader Written by https://github.com/drcmda
+
 export default class RefractionMaterial extends ShaderMaterial {
   constructor(options) {
     super({

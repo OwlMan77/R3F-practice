@@ -1,3 +1,4 @@
+// Shameless rip of https://github.com/drcmda Pen. The only thing that is mine in the gflt and image used for texture.
 import React, { useMemo, useRef, Suspense } from "react";
 import { WebGLRenderTarget, Object3D, LinearFilter} from "three"
 import { Canvas, useThree, useFrame } from "@react-three/fiber"
