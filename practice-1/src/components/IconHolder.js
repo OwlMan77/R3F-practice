@@ -23,6 +23,7 @@ function IconHolderObject() {
     const { size, viewport, gl, scene, camera, clock } = useThree()
     const model = useRef()
     const gltf = useGLTF(iconHolderGlb)
+    const texture = useTexture(textureUrl)
   
     // Create Fbo's and materials
     const [envFbo, backfaceFbo, backfaceMaterial, refractionMaterial] = useMemo(() => {
@@ -32,8 +33,6 @@ function IconHolderObject() {
       const refractionMaterial = new RefractionMaterial({ envMap: envFbo.texture, backfaceMap: backfaceFbo.texture, resolution: [size.width, size.height] })
       return [envFbo, backfaceFbo, backfaceMaterial, refractionMaterial]
     }, [size])
-  
-    console.log(gltf)
 
 
     useFrame(() => {
@@ -48,6 +47,9 @@ function IconHolderObject() {
         // Render cube backfaces to fbo
         camera.layers.set(0)
         model.current.material = backfaceMaterial
+        model.current.rotation.y = Math.PI / 2
+        model.current.rotation.x = Math.PI / 1.75
+        model.current.rotation.x = Math.PI / 0.5
         gl.setRenderTarget(backfaceFbo)
         gl.clearDepth()
         gl.render(scene, camera)
@@ -59,6 +61,11 @@ function IconHolderObject() {
         // Render cube with refraction material to screen
         camera.layers.set(0)
         model.current.material = refractionMaterial
+        gl.render(scene, camera)
+
+        // Renders test image on front of cube
+
+        model.current.material.map = texture
         gl.render(scene, camera)
       }, 1)
   
@@ -74,7 +81,7 @@ function IconHolder() {
       <Canvas linear camera={{ fov: 50, position: [0, 0, 30] }}>
         <Suspense fallback={null}>
           <Background />
-          <IconHolderObject />
+          <IconHolderObject onClick={() => console.log('clicked')}/>
         </Suspense>
       </Canvas>
     )
