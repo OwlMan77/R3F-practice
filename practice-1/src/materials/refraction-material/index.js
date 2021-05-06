@@ -18,7 +18,7 @@ export default class RefractionMaterial extends ShaderMaterial {
 
         vec4 worldPosition = modelMatrix * vec4( position, 1.0);
         worldNormal = normalize( modelViewMatrix * transformedNormal).xyz;
-        viewDirection = normalize(worldPosition.xyz - cameraPosition);;
+        viewDirection = normalize(worldPosition.xyz - cameraPosition);
         gl_Position = projectionMatrix * modelViewMatrix * transformedPosition;
       }`,
       fragmentShader: `uniform sampler2D envMap;
