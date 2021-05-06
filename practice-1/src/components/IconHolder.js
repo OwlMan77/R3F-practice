@@ -1,5 +1,5 @@
-import React, { useMemo, useRef, Suspense } from "react";
-import { WebGLRenderTarget, LinearFilter} from "three"
+import React, { useMemo, useRef, Suspense, useState } from "react";
+import { WebGLRenderTarget, LinearFilter, Vector3, Vector2} from "three"
 import { Canvas, useThree, useFrame } from "@react-three/fiber"
 import { useGLTF, useTexture, useAspect } from "@react-three/drei"
 import iconHolderGlb from "../assets/icon-holder.glb"
@@ -18,9 +18,13 @@ function Background() {
     )
   }
 
-function IconHolderObject() {
+function IconHolderObject(props) {
 
     const { size, viewport, gl, scene, camera, clock } = useThree()
+
+      // Set up state for the hovered and active state
+    const [hovered, setHover] = useState(false)
+    const [active, setActive] = useState(false)
     const model = useRef()
     const gltf = useGLTF(iconHolderGlb)
     const texture = useTexture(textureUrl)
@@ -37,8 +41,7 @@ function IconHolderObject() {
 
     useFrame(() => {
         // Update instanced iconHolders
-        model.current.matrix.needsUpdate = true
-        console.log(model)
+        model.current.matrix.needsUpdate = true 
         // Render env to fbo
         gl.autoClear = false
         camera.layers.set(1)
@@ -48,7 +51,6 @@ function IconHolderObject() {
         camera.layers.set(0)
         model.current.material = backfaceMaterial
         model.current.rotation.y = Math.PI / 2
-        model.current.rotation.x = Math.PI / 1.75
         model.current.rotation.x = Math.PI / 0.5
         gl.setRenderTarget(backfaceFbo)
         gl.clearDepth()
@@ -65,13 +67,16 @@ function IconHolderObject() {
 
         // Renders test image on front of cube
 
-        model.current.material.map = texture
-        gl.render(scene, camera)
+        // model.current.material = texture
+        // gl.render(scene, camera)
       }, 1)
   
     return (
-      <mesh ref={model} args={[gltf.nodes.Cube.geometry, null, 1]}>
-        <meshBasicMaterial />
+      <mesh
+      {...props}
+      ref={model} args={[gltf.nodes.Cube.geometry, null, 1]}
+      >
+        <meshBasicMaterial color={hovered ? 'hotpink' : 'orange'}/>
       </mesh>
     )
 }
@@ -80,8 +85,17 @@ function IconHolder() {
     return (
       <Canvas linear camera={{ fov: 50, position: [0, 0, 30] }}>
         <Suspense fallback={null}>
+          <IconHolderObject position={[1, 8, 3]}/>
+          <IconHolderObject position={[1, 2, 3]}/>
+          <IconHolderObject position={[1, -4 , 3]}/>
+          <IconHolderObject position={[-8, 8, 3]}/>
+          <IconHolderObject position={[-8, 2, 3]}/>
+          <IconHolderObject position={[-8, -4 , 3]}/>
+          <IconHolderObject position={[8, 8, 3]}/>
+          <IconHolderObject position={[8, 2, 3]}/>
+          <IconHolderObject position={[8, -4 , 3]}/>
           <Background />
-          <IconHolderObject onClick={() => console.log('clicked')}/>
+
         </Suspense>
       </Canvas>
     )

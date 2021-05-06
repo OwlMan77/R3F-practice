@@ -27,7 +27,7 @@ export default class RefractionMaterial extends ShaderMaterial {
       
       varying vec3 worldNormal;
       varying vec3 viewDirection;
-      
+          
       float ior = 1.5;
       float a = 0.33;
       
